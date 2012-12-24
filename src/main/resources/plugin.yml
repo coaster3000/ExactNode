@@ -1,0 +1,4 @@
+name: ExactNode
+version: ${project.version}
+author: coaster3000 (Bukkit:Coaster4321)
+main: com.github.coaster3000.exactnode.ExactNode
