@@ -7,6 +7,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.plugin.Plugin;
 
@@ -28,6 +29,24 @@ public class BlockListener extends ExactNodeListener {
 	}
 
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
+	public void onBreak(BlockBreakEvent event) {
+		if (!blockbreak)
+			return;
+
+		List<String> perms = new ArrayList<String>();
+		perms.add(ROOTNODE + "." + NODE + ".break." + getBlockPermission(event.getBlock()));
+		
+		if (useWildNode) {
+			perms.add(ROOTNODE + "." + NODE + ".break." + WILDCARD);
+			perms.add(ROOTNODE + "." + NODE + "." + WILDCARD + getBlockPermission(event.getBlock()));
+			perms.add(ROOTNODE + "." + NODE + "." + WILDCARD);
+			perms.add(ROOTNODE + "." + WILDCARD);
+		}
+		if (permissionDenied(event.getPlayer(), perms.toArray(new String[0])))
+			event.setCancelled(true);
+	}
+
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
 	public void onIgnite(BlockIgniteEvent event) {
 		if (!protectIgnite)
 			return;
@@ -36,11 +55,11 @@ public class BlockListener extends ExactNodeListener {
 			return;
 
 		List<String> perms = new ArrayList<String>();
-		perms.add(ROOTNODE + "." + NODE + "ignite." + getBlockPermission(event.getBlock()));
+		perms.add(ROOTNODE + "." + NODE + ".ignite." + getBlockPermission(event.getBlock()));
 		if (useWildNode) {
-			perms.add(ROOTNODE + "." + NODE + "ignite." + WILDCARD);
-			perms.add(ROOTNODE + "." + NODE + WILDCARD + getBlockPermission(event.getBlock()));
-			perms.add(ROOTNODE + "." + NODE + WILDCARD);
+			perms.add(ROOTNODE + "." + NODE + ".ignite." + WILDCARD);
+			perms.add(ROOTNODE + "." + NODE + "." + WILDCARD + getBlockPermission(event.getBlock()));
+			perms.add(ROOTNODE + "." + NODE + "." + WILDCARD);
 			perms.add(ROOTNODE + "." + WILDCARD);
 		}
 		if (permissionDenied(event.getPlayer(), perms.toArray(new String[0])))
