@@ -1,0 +1,27 @@
+settings:
+  use:
+    custom-wildcard-node: false
+    material-names: true
+  notify-player: true
+checks:
+  blocks:
+    break: true
+    place: true
+    ignite: true
+  items:
+    use: true
+    perms: true
+  metadata: true
+ 
+methods:
+  item-permissions: click #valid values are [click,pickup,drop]
+  
+messages:
+  permissions:
+    denied:
+      default: "&4You do not have %node"
+      item-use: "&4You may not use item '%item'"
+      item-pickup: null
+      item-drop: "&4You are not allowed to drop '%item'"
+      block-break: "&4You are not allowed to break '%block'"
+      block-place: "&4You are not allowed to place '%block'"
