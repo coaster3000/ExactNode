@@ -7,11 +7,15 @@ import java.util.WeakHashMap;
 import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
+import org.bukkit.event.Event.Result;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.Plugin;
 
 import com.github.coaster3000.exactnode.ExactNodeListener;
@@ -62,6 +66,37 @@ public class ItemListener extends ExactNodeListener {
 		itemDropCheck = config.getBoolean("checks.items.drop",itemDropCheck);
 		itemHaveCheck = config.getBoolean("checks.items.have",itemHaveCheck);
 		itemUseCheck = config.getBoolean("checks.items.use",itemUseCheck);
+	}
+	
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
+	public void onItemUse(PlayerInteractEvent event)
+	{
+		ItemStack item = event.getItem();
+		Player player = event.getPlayer();
+		if (item == null)
+			return;
+		if (itemHaveCheck&&!fullscan)
+		{
+			
+			if (!canHaveItem(player, item))
+			{
+				PlayerInventory inv = player.getInventory();
+				if (canDropItem(player, item))
+					dropItem(player.getLocation(), inv.getItemInHand());
+				inv.setItemInHand(null);
+			}
+		}
+			
+		
+		
+		if (!itemUseCheck||event.useItemInHand().equals(Event.Result.DENY))
+			return;
+		
+		if (!canUseItem(player, item))
+		{
+			event.setUseItemInHand(Result.DENY);
+			event.setCancelled(true);
+		}
 	}
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
 	public void onItemDrop(PlayerDropItemEvent event)
