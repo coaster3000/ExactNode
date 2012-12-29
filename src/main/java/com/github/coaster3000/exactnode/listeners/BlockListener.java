@@ -41,6 +41,7 @@ public class BlockListener extends ExactNodeListener {
 			perms.add(ROOTNODE + "." + NODE + "." + WILDCARD + getBlockPermission(event.getBlock()));
 			perms.add(ROOTNODE + "." + NODE + "." + WILDCARD);
 			perms.add(ROOTNODE + "." + WILDCARD);
+			perms.add(WILDCARD);
 		}
 		if (permissionDenied(event.getPlayer(), perms.toArray(new String[0])))
 			event.setCancelled(true);
@@ -58,6 +59,7 @@ public class BlockListener extends ExactNodeListener {
 			perms.add(ROOTNODE + "." + NODE + "." + WILDCARD + getBlockPermission(event.getBlock()));
 			perms.add(ROOTNODE + "." + NODE + "." + WILDCARD);
 			perms.add(ROOTNODE + "." + WILDCARD);
+			perms.add(WILDCARD);
 		}
 		if (permissionDenied(event.getPlayer(), perms.toArray(new String[0])))
 			event.setCancelled(true);
@@ -78,6 +80,7 @@ public class BlockListener extends ExactNodeListener {
 			perms.add(ROOTNODE + "." + NODE + "." + WILDCARD + getBlockPermission(event.getBlock()));
 			perms.add(ROOTNODE + "." + NODE + "." + WILDCARD);
 			perms.add(ROOTNODE + "." + WILDCARD);
+			perms.add(WILDCARD);
 		}
 		if (permissionDenied(event.getPlayer(), perms.toArray(new String[0])))
 			event.setCancelled(true);
