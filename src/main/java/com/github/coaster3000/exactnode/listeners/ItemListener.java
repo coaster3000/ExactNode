@@ -122,13 +122,18 @@ public class ItemListener extends ExactNodeListener {
 		if (!itemPickupCheck)
 			return;
 		Player player = event.getPlayer();//TODO: Finish onItemPickup event
+
+		if (!canHaveItem(player,event.getItem().getItemStack()))
+			event.setCancelled(true);
 		if (!canPickUpItem(player, event.getItem().getItemStack()))
 			event.setCancelled(true);
 		
 		if (method.equals(Method.PICKUP) && fullscan&&itemHaveCheck)
 			checkInventory(player);
+		
+		if (event.isCancelled())
+			return; //FIXME: Add informer shit
 	}
-	
 	
 
 	public void checkInventory(Player player) {
