@@ -62,7 +62,9 @@ public abstract class ExactNodeListener implements Listener {
 		this.registerEvents();
 		
 		checkMetadata = config.getBoolean("checks.metadata",checkMetadata);
-		
+		useMaterialNames = config.getBoolean("settings.use.material-names",useMaterialNames);
+		informPlayers = config.getBoolean("settings.notify-player",informPlayers);
+		useWildNode = config.getBoolean("settings.use.custom-wildcard-node",useWildNode);
 	}
 
 	/*
