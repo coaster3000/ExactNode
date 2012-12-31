@@ -41,11 +41,13 @@ public class ExactNode extends JavaPlugin {
 		}
 
 		this.saveConfig();
-		
+		this.informer = new PlayerInformer();
 		PlayerInformer.NO_PERM = config.getString("messages.permissions.denied","&4You do not have permission");
 		PlayerInformer.EMPTY = config.getString("messages.permissions.empty","for that!");
 		PlayerInformer.FULL = config.getString("messages.permissios.full","&e%1$s %2$s");
 		
+		registerListeners();
+		getLogger().info("Registered Listeners");
 	}
 
 	@Override
@@ -70,14 +72,17 @@ public class ExactNode extends JavaPlugin {
 		config.set("settings.use.material-names",true);
 		config.set("settings.notify-player",true);
 		config.set("settings.use.custom-wildcard-node",false);
+		config.set("settings.use.op-perms",true);
 		
+		//Methods for inventory permissions.
 		config.set("methods.item-permissions", "click");
 		config.set("methods.item-fullscan", false);
+		
+		//Checks
 		config.set("checks.items.pickup",true);
 		config.set("checks.items.drop",true);
 		config.set("checks.items.have",true);
 		config.set("checks.items.use",true);
-		
 		
 		// Messages
 		PlayerInformer.NO_PERM = config.getString("messages.permissions.denied","&4You do not have permission");
@@ -99,8 +104,8 @@ public class ExactNode extends JavaPlugin {
 	protected void registerListeners() {
 		for (Class<? extends ExactNodeListener> listenerClass : LISTENERS) {
 			try {
-				Constructor<? extends ExactNodeListener> constructor = listenerClass.getConstructor(Plugin.class, ConfigurationSection.class, PlayerInformer.class);
-				ExactNodeListener listener = (ExactNodeListener) constructor.newInstance(this, this.getConfig(), this.informer);
+				Constructor<? extends ExactNodeListener> constructor = listenerClass.getConstructor(Plugin.class, ConfigurationSection.class);
+				ExactNodeListener listener = (ExactNodeListener) constructor.newInstance(this, this.getConfig());
 				this.listeners.add(listener);
 			} catch (Throwable e) {
 				this.getLogger().warning("Failed to initialize \"" + listenerClass.getName() + "\" listener");

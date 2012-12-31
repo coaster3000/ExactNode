@@ -2,6 +2,7 @@ settings:
   use:
     custom-wildcard-node: false
     material-names: true
+    op-perms: true
   notify-player: true
 checks:
   blocks:

@@ -20,6 +20,7 @@ import org.bukkit.plugin.Plugin;
 
 import com.github.coaster3000.exactnode.ExactNodeListener;
 import com.github.coaster3000.exactnode.PlayerInformer;
+import com.github.coaster3000.exactnode.PlayerInformer.Action;
 
 public class ItemListener extends ExactNodeListener {
 	private static final String NODE = "items";
@@ -58,8 +59,8 @@ public class ItemListener extends ExactNodeListener {
 	}
 
 
-	public ItemListener(Plugin plugin, ConfigurationSection config, PlayerInformer informer) {
-		super(plugin, config, informer);
+	public ItemListener(Plugin plugin, ConfigurationSection config) {
+		super(plugin, config);
 		method = Method.toEnum(config.getString("methods.item-permissions", "click"));
 		fullscan = config.getBoolean("methods.item-fullscan", fullscan);
 		itemPickupCheck = config.getBoolean("checks.items.pickup",itemPickupCheck);
@@ -75,6 +76,8 @@ public class ItemListener extends ExactNodeListener {
 		Player player = event.getPlayer();
 		if (item == null)
 			return;
+		
+		
 		if (itemHaveCheck&&!fullscan)
 		{
 			
@@ -84,11 +87,13 @@ public class ItemListener extends ExactNodeListener {
 				if (canDropItem(player, item))
 					dropItem(player.getLocation(), inv.getItemInHand());
 				inv.setItemInHand(null);
+				PlayerInformer.inform(event.getPlayer(),item.getType(),Action.HAVE);
 			}
 		}
 			
 		
-		
+		if (item.getType().isBlock())
+			return;
 		if (!itemUseCheck||event.useItemInHand().equals(Event.Result.DENY))
 			return;
 		
@@ -96,6 +101,7 @@ public class ItemListener extends ExactNodeListener {
 		{
 			event.setUseItemInHand(Result.DENY);
 			event.setCancelled(true);
+			PlayerInformer.inform(event.getPlayer(), item.getType(),Action.USE);
 		}
 	}
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
@@ -115,6 +121,8 @@ public class ItemListener extends ExactNodeListener {
 		if (method.equals(Method.DROP) && fullscan&&itemHaveCheck)
 			checkInventory(player);
 		
+		if (event.isCancelled())
+			PlayerInformer.inform(event.getPlayer(), event.getItemDrop().getItemStack().getType(),Action.DROP);
 	}
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
@@ -132,7 +140,7 @@ public class ItemListener extends ExactNodeListener {
 			checkInventory(player);
 		
 		if (event.isCancelled())
-			return; //FIXME: Add informer shit
+			PlayerInformer.inform(event.getPlayer(), event.getItem().getItemStack().getType(),Action.PICKUP);
 	}
 	
 
@@ -140,12 +148,14 @@ public class ItemListener extends ExactNodeListener {
 		WeakHashMap<String, Boolean> cache = new WeakHashMap<String, Boolean>();
 		ItemStack[] contents = player.getInventory().getContents();
 		for (int i = 0; i < contents.length; i++) {
+			boolean removed = false;
 			if (contents[i] == null)
 				continue;
 			ItemStack item = contents[i];
 			String t = item.getTypeId() + ":" + item.getData().getData();
 			if (cache.containsKey(t)) {
 				if (!cache.get(t)) {
+					removed = true;
 					if (canDropItem(player, item))
 						dropItem(player.getLocation(), item);
 					contents[i] = null;
@@ -154,11 +164,14 @@ public class ItemListener extends ExactNodeListener {
 				boolean a = canHaveItem(player, item);
 				cache.put(t, a);
 				if (!a) {
+					removed = true;
 					if (canDropItem(player, item))
 						dropItem(player.getLocation(), item);
 					contents[i] = null;
 				}
 			}
+			if (removed)
+				PlayerInformer.inform(player, item.getType(), Action.HAVE);
 
 		}
 	}

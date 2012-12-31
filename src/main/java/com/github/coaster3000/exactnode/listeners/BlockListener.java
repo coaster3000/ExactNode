@@ -13,6 +13,7 @@ import org.bukkit.plugin.Plugin;
 
 import com.github.coaster3000.exactnode.ExactNodeListener;
 import com.github.coaster3000.exactnode.PlayerInformer;
+import com.github.coaster3000.exactnode.PlayerInformer.Action;
 
 public class BlockListener extends ExactNodeListener {
 
@@ -21,8 +22,8 @@ public class BlockListener extends ExactNodeListener {
 	private boolean blockplace = true;
 	private boolean blockbreak = true;
 
-	public BlockListener(Plugin plugin, ConfigurationSection config, PlayerInformer informer) {
-		super(plugin, config, informer);
+	public BlockListener(Plugin plugin, ConfigurationSection config) {
+		super(plugin, config);
 		protectIgnite = config.getBoolean("checks.ignition", protectIgnite);
 		blockbreak = config.getBoolean("checks.block.break", blockbreak);
 		blockplace = config.getBoolean("checks.block.place", blockplace);
@@ -35,7 +36,7 @@ public class BlockListener extends ExactNodeListener {
 
 		List<String> perms = new ArrayList<String>();
 		perms.add(ROOTNODE + "." + NODE + ".break." + getBlockPermission(event.getBlock()));
-		
+
 		if (useWildNode) {
 			perms.add(ROOTNODE + "." + NODE + ".break." + WILDCARD);
 			perms.add(ROOTNODE + "." + NODE + "." + WILDCARD + getBlockPermission(event.getBlock()));
@@ -43,17 +44,20 @@ public class BlockListener extends ExactNodeListener {
 			perms.add(ROOTNODE + "." + WILDCARD);
 			perms.add(WILDCARD);
 		}
-		if (permissionDenied(event.getPlayer(), perms.toArray(new String[0])))
+		if (permissionDenied(event.getPlayer(), perms.toArray(new String[0]))) {
 			event.setCancelled(true);
+			PlayerInformer.inform(event.getPlayer(), event.getBlock().getType(), Action.BREAK);
+		}
 	}
+
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
 	public void onPlace(BlockPlaceEvent event) {
 		if (!blockplace)
 			return;
-		
+
 		List<String> perms = new ArrayList<String>();
 		perms.add(ROOTNODE + "." + NODE + ".place." + getBlockPermission(event.getBlock()));
-		
+
 		if (useWildNode) {
 			perms.add(ROOTNODE + "." + NODE + ".place." + WILDCARD);
 			perms.add(ROOTNODE + "." + NODE + "." + WILDCARD + getBlockPermission(event.getBlock()));
@@ -61,8 +65,10 @@ public class BlockListener extends ExactNodeListener {
 			perms.add(ROOTNODE + "." + WILDCARD);
 			perms.add(WILDCARD);
 		}
-		if (permissionDenied(event.getPlayer(), perms.toArray(new String[0])))
+		if (permissionDenied(event.getPlayer(), perms.toArray(new String[0]))) {
 			event.setCancelled(true);
+			PlayerInformer.inform(event.getPlayer(), event.getBlock().getType(), Action.PLACE);
+		}
 	}
 
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
@@ -82,8 +88,11 @@ public class BlockListener extends ExactNodeListener {
 			perms.add(ROOTNODE + "." + WILDCARD);
 			perms.add(WILDCARD);
 		}
-		if (permissionDenied(event.getPlayer(), perms.toArray(new String[0])))
+		if (permissionDenied(event.getPlayer(), perms.toArray(new String[0]))) {
 			event.setCancelled(true);
+			PlayerInformer.inform(event.getPlayer(), event.getBlock().getType(), Action.BREAK);
+		}
+
 	}
 
 }

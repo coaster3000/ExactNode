@@ -53,8 +53,9 @@ public abstract class ExactNodeListener implements Listener {
 	protected boolean informPlayers = false;
 	private boolean useMaterialNames = true;
 	private boolean checkMetadata = false;
-
-	public ExactNodeListener(Plugin plugin, ConfigurationSection config, PlayerInformer informer) {
+	private boolean useOp = true;
+	
+	public ExactNodeListener(Plugin plugin, ConfigurationSection config) {
 		this.plugin = plugin;
 		this.config = config;
 		this.informer = informer;
@@ -65,6 +66,7 @@ public abstract class ExactNodeListener implements Listener {
 		useMaterialNames = config.getBoolean("settings.use.material-names",useMaterialNames);
 		informPlayers = config.getBoolean("settings.notify-player",informPlayers);
 		useWildNode = config.getBoolean("settings.use.custom-wildcard-node",useWildNode);
+		useOp = config.getBoolean("settings.use.op-perms",useOp);
 	}
 
 	/*
@@ -138,14 +140,18 @@ public abstract class ExactNodeListener implements Listener {
 		{
 			if (permissionSet(player, perm))
 				if (!hasPermission(player, perm))
-					return true;
+					return false;
 				else
 					isFound = true;
 		}
+		
 		if (!isFound)
-			return hasPermission(player, perms[0]);
+			if (useOp)
+				return !player.isOp();
+			else
+				return true;
 		else
-			return false;
+			return true;
 	}
 	
 	protected final boolean hasPermission(Player player,String permission)

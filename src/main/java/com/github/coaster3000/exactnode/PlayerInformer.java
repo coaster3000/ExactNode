@@ -8,7 +8,7 @@ public class PlayerInformer {
 
 	public static String NO_PERM = "&4You do not have permission";
 	public static String EMPTY = "for that!";
-	public static String FULL = "&e%1$s %2$s";
+	public static String FULL = "&e%1$s %2$s.";
 
 	public static enum Action {
 		USE, PICKUP, DROP, HAVE, BREAK, PLACE;
@@ -19,16 +19,16 @@ public class PlayerInformer {
 		}
 	}
 
-	public void inform(Player player)
+	public static void inform(Player player)
 	{
 		inform(player,(Material)null,(Action)null);
 	}
 	
-	public void inform(Player player, Material mat, Action action) {
-		informPlayer(player, NO_PERM + ((mat != null && action != null) ? String.format(FULL, action, mat.name().replaceAll("_", "")) : EMPTY));
+	public static void inform(Player player, Material mat, Action action) {
+		informPlayer(player, NO_PERM +" "+ ((mat != null && action != null) ? String.format(FULL, action, mat.name().replaceAll("_", "")) : EMPTY));
 	}
 
-	protected final void informPlayer(Player player, String msg) {
+	protected static final void informPlayer(Player player, String msg) {
 		player.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
 	}
 
