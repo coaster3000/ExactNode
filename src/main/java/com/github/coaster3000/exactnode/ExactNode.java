@@ -46,8 +46,8 @@ public class ExactNode extends JavaPlugin {
 		PlayerInformer.NO_PERM = config.getString("messages.permissions.denied", "&4You do not have permission");
 		PlayerInformer.EMPTY = config.getString("messages.permissions.empty", "for that!");
 		PlayerInformer.FULL = config.getString("messages.permissios.full", "&e%1$s %2$s");
-		PlayerInformer.ACTIONONLY = config.getString("messages.permissions.action-only","to &e%1$s.");
-		
+		PlayerInformer.ACTIONONLY = config.getString("messages.permissions.action-only", "to &e%1$s.");
+
 		registerListeners();
 		getLogger().info("Registered Listeners");
 	}
@@ -85,14 +85,14 @@ public class ExactNode extends JavaPlugin {
 		config.set("checks.items.drop", true);
 		config.set("checks.items.have", true);
 		config.set("checks.items.use", true);
-		
+
 		config.set("checks.chat", true);
 
 		// Messages
 		config.set("messages.permissions.denied", "&4You do not have permission");
 		config.set("messages.permissions.empty", "for that!");
 		config.set("messages.permissions.full", "&e%1$s %2$s");
-		config.set("messages.permissions.action-only","to &e%1$s.");
+		config.set("messages.permissions.action-only", "to &e%1$s.");
 		// Predefined messages
 	}
 

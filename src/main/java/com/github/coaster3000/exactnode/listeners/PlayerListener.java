@@ -38,7 +38,7 @@ public class PlayerListener extends ExactNodeListener {
 		if (permissionDenied(player, perms.toArray(new String[0]))) {
 			event.setCancelled(true);
 			if (informPlayers)
-			PlayerInformer.inform(event.getPlayer(), Action.CHAT);
+				PlayerInformer.inform(event.getPlayer(), Action.CHAT);
 		}
 	}
 
