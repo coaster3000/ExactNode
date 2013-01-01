@@ -58,91 +58,80 @@ public class ItemListener extends ExactNodeListener {
 		}
 	}
 
-
 	public ItemListener(Plugin plugin, ConfigurationSection config) {
 		super(plugin, config);
 		method = Method.toEnum(config.getString("methods.item-permissions", "click"));
 		fullscan = config.getBoolean("methods.item-fullscan", fullscan);
-		itemPickupCheck = config.getBoolean("checks.items.pickup",itemPickupCheck);
-		itemDropCheck = config.getBoolean("checks.items.drop",itemDropCheck);
-		itemHaveCheck = config.getBoolean("checks.items.have",itemHaveCheck);
-		itemUseCheck = config.getBoolean("checks.items.use",itemUseCheck);
+		itemPickupCheck = config.getBoolean("checks.items.pickup", itemPickupCheck);
+		itemDropCheck = config.getBoolean("checks.items.drop", itemDropCheck);
+		itemHaveCheck = config.getBoolean("checks.items.have", itemHaveCheck);
+		itemUseCheck = config.getBoolean("checks.items.use", itemUseCheck);
 	}
-	
+
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
-	public void onItemUse(PlayerInteractEvent event)
-	{
+	public void onItemUse(PlayerInteractEvent event) {
 		ItemStack item = event.getItem();
 		Player player = event.getPlayer();
 		if (item == null)
 			return;
-		
-		
-		if (itemHaveCheck&&!fullscan)
-		{
-			
-			if (!canHaveItem(player, item))
-			{
+
+		if (itemHaveCheck && !fullscan) {
+
+			if (!canHaveItem(player, item)) {
 				PlayerInventory inv = player.getInventory();
 				if (canDropItem(player, item))
 					dropItem(player.getLocation(), inv.getItemInHand());
 				inv.setItemInHand(null);
-				PlayerInformer.inform(event.getPlayer(),item.getType(),Action.HAVE);
+				if (informPlayers)
+					PlayerInformer.inform(event.getPlayer(), item.getType(), Action.HAVE);
 			}
 		}
-			
-		
+
 		if (item.getType().isBlock())
 			return;
-		if (!itemUseCheck||event.useItemInHand().equals(Event.Result.DENY))
+		if (!itemUseCheck || event.useItemInHand().equals(Event.Result.DENY))
 			return;
-		
-		if (!canUseItem(player, item))
-		{
+
+		if (!canUseItem(player, item)) {
 			event.setUseItemInHand(Result.DENY);
 			event.setCancelled(true);
-			PlayerInformer.inform(event.getPlayer(), item.getType(),Action.USE);
+			if (informPlayers)
+				PlayerInformer.inform(event.getPlayer(), item.getType(), Action.USE);
 		}
 	}
+
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
-	public void onItemDrop(PlayerDropItemEvent event)
-	{
+	public void onItemDrop(PlayerDropItemEvent event) {
 		if (!itemDropCheck)
 			return;
-		
+
 		Player player = event.getPlayer();
-		
+
 		if (!canDropItem(player, event.getItemDrop().getItemStack()))
 			event.setCancelled(true);
-		
-		if (event.isCancelled()&&informPlayers)
-			return; //FIXME: Add informer shit.
-		
-		if (method.equals(Method.DROP) && fullscan&&itemHaveCheck)
+
+		if (method.equals(Method.DROP) && fullscan && itemHaveCheck)
 			checkInventory(player);
-		
-		if (event.isCancelled())
-			PlayerInformer.inform(event.getPlayer(), event.getItemDrop().getItemStack().getType(),Action.DROP);
+
+		if (event.isCancelled() && informPlayers)
+			PlayerInformer.inform(event.getPlayer(), event.getItemDrop().getItemStack().getType(), Action.DROP);
 	}
-	
+
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
 	public void onItemPickup(PlayerPickupItemEvent event) {
 		if (!itemPickupCheck)
 			return;
-		Player player = event.getPlayer();//TODO: Finish onItemPickup event
+		Player player = event.getPlayer();
 
-		if (!canHaveItem(player,event.getItem().getItemStack()))
+		if (!canHaveItem(player, event.getItem().getItemStack()))
 			event.setCancelled(true);
 		if (!canPickUpItem(player, event.getItem().getItemStack()))
 			event.setCancelled(true);
-		
-		if (method.equals(Method.PICKUP) && fullscan&&itemHaveCheck)
+
+		if (method.equals(Method.PICKUP) && fullscan && itemHaveCheck)
 			checkInventory(player);
-		
-		if (event.isCancelled())
-			PlayerInformer.inform(event.getPlayer(), event.getItem().getItemStack().getType(),Action.PICKUP);
+
 	}
-	
 
 	public void checkInventory(Player player) {
 		WeakHashMap<String, Boolean> cache = new WeakHashMap<String, Boolean>();
@@ -170,7 +159,7 @@ public class ItemListener extends ExactNodeListener {
 					contents[i] = null;
 				}
 			}
-			if (removed)
+			if (removed && informPlayers)
 				PlayerInformer.inform(player, item.getType(), Action.HAVE);
 
 		}
@@ -205,6 +194,7 @@ public class ItemListener extends ExactNodeListener {
 		}
 		return !(permissionDenied(player, perms.toArray(new String[0])));
 	}
+
 	private boolean canPickUpItem(Player player, ItemStack item) {
 		if (!canHaveItem(player, item))
 			return false;
@@ -219,6 +209,7 @@ public class ItemListener extends ExactNodeListener {
 		}
 		return !(permissionDenied(player, perms.toArray(new String[0])));
 	}
+
 	private boolean canUseItem(Player player, ItemStack item) {
 		List<String> perms = new ArrayList<String>();
 		perms.add(ROOTNODE + "." + NODE + ".use." + getItemPermission(item));

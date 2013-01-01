@@ -16,13 +16,14 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.coaster3000.exactnode.listeners.BlockListener;
 import com.github.coaster3000.exactnode.listeners.ItemListener;
+import com.github.coaster3000.exactnode.listeners.PlayerListener;
 
 public class ExactNode extends JavaPlugin {
-	
+
 	protected PlayerInformer informer;
 	protected List<ExactNodeListener> listeners = new ArrayList<ExactNodeListener>();
 	@SuppressWarnings("unchecked")
-	protected final static Class<? extends ExactNodeListener>[] LISTENERS = new Class[] {ItemListener.class,BlockListener.class};
+	protected final static Class<? extends ExactNodeListener>[] LISTENERS = new Class[] { ItemListener.class, BlockListener.class, PlayerListener.class };
 	protected FileConfiguration config;
 	protected File configFile;
 
@@ -42,10 +43,10 @@ public class ExactNode extends JavaPlugin {
 
 		this.saveConfig();
 		this.informer = new PlayerInformer();
-		PlayerInformer.NO_PERM = config.getString("messages.permissions.denied","&4You do not have permission");
-		PlayerInformer.EMPTY = config.getString("messages.permissions.empty","for that!");
-		PlayerInformer.FULL = config.getString("messages.permissios.full","&e%1$s %2$s");
-		
+		PlayerInformer.NO_PERM = config.getString("messages.permissions.denied", "&4You do not have permission");
+		PlayerInformer.EMPTY = config.getString("messages.permissions.empty", "for that!");
+		PlayerInformer.FULL = config.getString("messages.permissios.full", "&e%1$s %2$s");
+
 		registerListeners();
 		getLogger().info("Registered Listeners");
 	}
@@ -68,27 +69,27 @@ public class ExactNode extends JavaPlugin {
 
 	protected void initializeConfiguration(FileConfiguration config) {
 		// Flags
-		config.set("checks.metadata",true);
-		config.set("settings.use.material-names",true);
-		config.set("settings.notify-player",true);
-		config.set("settings.use.custom-wildcard-node",false);
-		config.set("settings.use.op-perms",true);
-		
+		config.set("checks.metadata", true);
+		config.set("settings.use.material-names", true);
+		config.set("settings.notify-player", true);
+		config.set("settings.use.custom-wildcard-node", false);
+		config.set("settings.use.op-perms", true);
+
 		//Methods for inventory permissions.
 		config.set("methods.item-permissions", "click");
 		config.set("methods.item-fullscan", false);
-		
+
 		//Checks
-		config.set("checks.items.pickup",true);
-		config.set("checks.items.drop",true);
-		config.set("checks.items.have",true);
-		config.set("checks.items.use",true);
-		
+		config.set("checks.items.pickup", true);
+		config.set("checks.items.drop", true);
+		config.set("checks.items.have", true);
+		config.set("checks.items.use", true);
+
 		// Messages
-		PlayerInformer.NO_PERM = config.getString("messages.permissions.denied","&4You do not have permission");
-		PlayerInformer.EMPTY = config.getString("messages.permissions.empty","for that!");
-		PlayerInformer.FULL = config.getString("messages.permissios.full","&e%1$s %2$s");
-		
+		PlayerInformer.NO_PERM = config.getString("messages.permissions.denied", "&4You do not have permission");
+		PlayerInformer.EMPTY = config.getString("messages.permissions.empty", "for that!");
+		PlayerInformer.FULL = config.getString("messages.permissios.full", "&e%1$s %2$s");
+
 		// Predefined messages
 	}
 
@@ -139,6 +140,6 @@ public class ExactNode extends JavaPlugin {
 		if (defConfigStream != null) {
 			this.config.setDefaults(YamlConfiguration.loadConfiguration(defConfigStream));
 		}
-		
+
 	}
 }

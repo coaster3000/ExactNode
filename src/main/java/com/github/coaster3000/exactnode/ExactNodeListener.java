@@ -29,7 +29,6 @@
  */
 package com.github.coaster3000.exactnode;
 
-
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
@@ -47,26 +46,23 @@ public abstract class ExactNodeListener implements Listener {
 	protected final static String WILDCARD = "*";
 	public final static String ROOTNODE = "en";
 	protected Plugin plugin;
-	protected PlayerInformer informer;
 	protected ConfigurationSection config;
 	protected boolean useWildNode = false;
 	protected boolean informPlayers = false;
 	private boolean useMaterialNames = true;
 	private boolean checkMetadata = false;
 	private boolean useOp = true;
-	
+
 	public ExactNodeListener(Plugin plugin, ConfigurationSection config) {
 		this.plugin = plugin;
 		this.config = config;
-		this.informer = informer;
-
 		this.registerEvents();
-		
-		checkMetadata = config.getBoolean("checks.metadata",checkMetadata);
-		useMaterialNames = config.getBoolean("settings.use.material-names",useMaterialNames);
-		informPlayers = config.getBoolean("settings.notify-player",informPlayers);
-		useWildNode = config.getBoolean("settings.use.custom-wildcard-node",useWildNode);
-		useOp = config.getBoolean("settings.use.op-perms",useOp);
+
+		checkMetadata = config.getBoolean("checks.metadata", checkMetadata);
+		useMaterialNames = config.getBoolean("settings.use.material-names", useMaterialNames);
+		informPlayers = config.getBoolean("settings.notify-player", informPlayers);
+		useWildNode = config.getBoolean("settings.use.custom-wildcard-node", useWildNode);
+		useOp = config.getBoolean("settings.use.op-perms", useOp);
 	}
 
 	/*
@@ -118,8 +114,9 @@ public abstract class ExactNodeListener implements Listener {
 	protected String getBlockPermission(Block block) {
 		return getBlockPermission(block, checkMetadata);
 	}
-	private String getBlockPermission(Block block,boolean useMeta) {
-		return getMaterialPermission(block.getType(), (useMeta)?block.getData():0);
+
+	private String getBlockPermission(Block block, boolean useMeta) {
+		return getMaterialPermission(block.getType(), (useMeta) ? block.getData() : 0);
 	}
 
 	public String getItemPermission(ItemStack item) {
@@ -129,22 +126,21 @@ public abstract class ExactNodeListener implements Listener {
 	protected void registerEvents() {
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
-	
+
 	private String formatEnumString(String enumName) {
 		return enumName.toLowerCase().replace("_", "");
 	}
 
 	protected boolean permissionDenied(Player player, String[] perms) {
 		boolean isFound = false;
-		for (String perm:perms)
-		{
+		for (String perm : perms) {
 			if (permissionSet(player, perm))
 				if (!hasPermission(player, perm))
 					return false;
 				else
 					isFound = true;
 		}
-		
+
 		if (!isFound)
 			if (useOp)
 				return !player.isOp();
@@ -153,20 +149,17 @@ public abstract class ExactNodeListener implements Listener {
 		else
 			return true;
 	}
-	
-	protected final boolean hasPermission(Player player,String permission)
-	{
+
+	protected final boolean hasPermission(Player player, String permission) {
 		return player.hasPermission(permission);
 	}
-	
-	protected final boolean permissionSet(Player player,String permission)
-	{
+
+	protected final boolean permissionSet(Player player, String permission) {
 		return player.isPermissionSet(permission);
 	}
-	
-	
+
 	/*
 	 * Duplicate Code End
 	 */
-	
+
 }

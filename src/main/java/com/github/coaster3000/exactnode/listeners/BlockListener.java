@@ -46,7 +46,8 @@ public class BlockListener extends ExactNodeListener {
 		}
 		if (permissionDenied(event.getPlayer(), perms.toArray(new String[0]))) {
 			event.setCancelled(true);
-			PlayerInformer.inform(event.getPlayer(), event.getBlock().getType(), Action.BREAK);
+			if (informPlayers)
+				PlayerInformer.inform(event.getPlayer(), event.getBlock().getType(), Action.BREAK);
 		}
 	}
 
@@ -67,7 +68,8 @@ public class BlockListener extends ExactNodeListener {
 		}
 		if (permissionDenied(event.getPlayer(), perms.toArray(new String[0]))) {
 			event.setCancelled(true);
-			PlayerInformer.inform(event.getPlayer(), event.getBlock().getType(), Action.PLACE);
+			if (informPlayers)
+				PlayerInformer.inform(event.getPlayer(), event.getBlock().getType(), Action.PLACE);
 		}
 	}
 
@@ -90,7 +92,8 @@ public class BlockListener extends ExactNodeListener {
 		}
 		if (permissionDenied(event.getPlayer(), perms.toArray(new String[0]))) {
 			event.setCancelled(true);
-			PlayerInformer.inform(event.getPlayer(), event.getBlock().getType(), Action.BREAK);
+			if (informPlayers)
+				PlayerInformer.inform(event.getPlayer(), event.getBlock().getType(), Action.BREAK);
 		}
 
 	}

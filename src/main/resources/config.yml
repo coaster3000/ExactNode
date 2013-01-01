@@ -14,10 +14,11 @@ checks:
     have: true
     drop: true
     pickup: true
+  chat: true
   metadata: true
  
 methods:
-  item-permissions: click #valid values are [click,pickup,drop]
+  item-permissions: pickup #valid values are [click,pickup,drop]
   item-fullscan: false
   
 messages:
