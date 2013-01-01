@@ -50,7 +50,7 @@ public abstract class ExactNodeListener implements Listener {
 	protected boolean useWildNode = false;
 	protected boolean informPlayers = false;
 	private boolean useMaterialNames = true;
-	private boolean checkMetadata = false;
+	private boolean checkMetadata = true;
 	private boolean useOp = true;
 
 	public ExactNodeListener(Plugin plugin, ConfigurationSection config) {
