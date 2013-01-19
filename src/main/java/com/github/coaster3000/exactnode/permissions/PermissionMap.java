@@ -14,64 +14,70 @@ public class PermissionMap implements PermissionSection {
 	private PermissionSection parent = null;
 	private Map<String, Object> data = new HashMap<String, Object>();
 	private String name = null;
-	
-	public PermissionMap(PermissionSection parent,String path)
-	{
-		this.parent = parent;
-	}
-	public PermissionMap(String path) {
-		if (path.indexOf(".")>=0){
-			name = path.substring(0, path.indexOf('.')-1);
-			String next = path.substring(path.indexOf(".")+1); //XXX:Double check this code for redundency and shit
-			createPermissionSection(next);
-		}
-		else
+
+	public PermissionMap(PermissionSection parent, String path) {
+		path = cleanPath(path);
+		if (parent != null)
+			this.parent = parent;
+		if (path.indexOf('.') > 0) {
+			name = path.substring(0, path.indexOf('.') - 1);
+			createPermissionSection(path.substring(path.indexOf('.') + 1));
+		} else
 			name = path;
+
 	}
+
+	public PermissionMap(String path) {
+		this(null, path);
+	}
+
 	private static boolean isValidData(Object data) {
 		return ((data instanceof PermissionSection) || (data instanceof Permission)) ? true : false;
 	}
-	
-	private void setData(PermissionSection sect)
-	{
+
+	private void setData(PermissionSection sect) {
 		data.put(sect.getName(), sect);
 	}
+
 	public boolean isPermission(String path) {
 		if (!isExistant(path))
 			return false;
 		Object d = data.get(path);
 		return (d instanceof Permission);
 	}
+
 	public PermissionSection createPermissionSection(String path) {
+		path = cleanPath(path);
 		PermissionSection sect = getPermissionSection(path);
-		boolean exist = (sect!= null);
+
+		boolean exist = (sect != null);
 		if (exist)
 			return sect;
 		if (sect == null)
-			sect = new PermissionMap(path);
-		if (path.indexOf('.')>=0)
-		{
-			setData(sect); //FIXME: LEft off here.
-		}
-		
-		return null;
+			sect = new PermissionMap(this, path);
+
+		if (!exist)
+			setData(sect);
+		return sect;
 	}
+
 	public Permission getPermission(String path) {
-		return (isPermission(path))?(Permission)data.get(path):null;
+		return (isPermission(path)) ? (Permission) data.get(path) : null;
 	}
+
 	public PermissionSection getPermissionSection(String path) {
-		return (isPermissionSection(path))?(PermissionSection)data.get(path):null;
+		return (isPermissionSection(path)) ? (PermissionSection) data.get(path) : null;
 	}
-	
+
 	public boolean isPermissionSection(String path) {
 		if (!isExistant(path))
 			return false;
 		Object d = data.get(path);
 		return (d instanceof PermissionSection);
 	}
-	
+
 	public PermissionSection getRoot() {
-		return (parent!=null)?parent.getRoot():this;
+		return (parent != null) ? parent.getRoot() : this;
 	}
 
 	public PermissionSection getParent() {
@@ -94,5 +100,17 @@ public class PermissionMap implements PermissionSection {
 		for (java.util.Map.Entry<String, Object> obj : data.entrySet())
 			if (!isValidData(obj.getValue()))
 				data.remove(obj.getKey());
+	}
+
+	private static String cleanPath(String original) {
+		while (original.contains(".."))
+			//Fail safe
+			original = original.replaceAll("..", "."); //Cleanup code
+
+		while (original.startsWith("."))
+			//Fail Safe
+			original = original.substring(1); //Cleanup code
+
+		return original;
 	}
 }
