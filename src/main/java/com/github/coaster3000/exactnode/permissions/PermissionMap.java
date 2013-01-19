@@ -1,14 +1,10 @@
 package com.github.coaster3000.exactnode.permissions;
 
-import java.awt.List;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.permissions.Permission;
-import org.bukkit.util.Java15Compat;
-import org.bukkit.util.StringUtil;
-
-import com.google.common.collect.Multiset.Entry;
 
 public class PermissionMap implements PermissionSection {
 	private PermissionSection parent = null;
@@ -25,6 +21,25 @@ public class PermissionMap implements PermissionSection {
 		} else
 			name = path;
 
+	}
+
+	public java.util.List<String> getKeys(boolean deep) {
+		ArrayList<String> keys = new ArrayList<String>();
+		if (data.size() > 0)
+			for (java.util.Map.Entry<String, Object> ob : data.entrySet()) {
+				if (ob.getValue() instanceof PermissionSection)
+					if (deep)
+						keys.addAll(((PermissionSection) ob).getKeys(true));
+					else
+						continue;
+				else
+					keys.add(ob.getKey());
+			}
+		return keys;
+	}
+
+	public java.util.List<String> getKeys() {
+		return getKeys(false);
 	}
 
 	public PermissionMap(String path) {
@@ -112,5 +127,9 @@ public class PermissionMap implements PermissionSection {
 			original = original.substring(1); //Cleanup code
 
 		return original;
+	}
+
+	public String getName() {
+		return name;
 	}
 }
