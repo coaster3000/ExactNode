@@ -34,8 +34,17 @@
 							<artifactSet>
 								<includes>
 									<include>se.ranzdo.bukkit:methodcommand</include>
+									<include>net.milkbowl.vault:Vault</include>
 								</includes>
 							</artifactSet>
+							<filters>
+								<filter>
+									<artifact>net.milkbowl.vault:Vault</artifact>
+									<includes>
+										<include>net/milkbowl/vault/item/**</include>
+									</includes>
+								</filter>
+							</filters>
 						</configuration>
 					</execution>
 				</executions>
@@ -52,6 +61,11 @@
 			<groupId>se.ranzdo.bukkit</groupId>
 			<artifactId>methodcommand</artifactId>
 			<version>0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>net.milkbowl.vault</groupId>
+			<artifactId>Vault</artifactId>
+			<version>1.2.23-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 	<version>1.0.0-SNAPSHOT</version>
