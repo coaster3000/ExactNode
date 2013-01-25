@@ -4,6 +4,8 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.coaster3000.exactnode.listeners.*;
+
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.Plugin;
@@ -21,14 +23,27 @@ public class ExactNode extends JavaPlugin {
 	private PermissionDefault defaultChat = PermissionDefault.TRUE;
 	private PermissionRegistry perms = null;
 	private List<ExactNodeListener> listeners = new ArrayList<ExactNodeListener>();
-	
 	@SuppressWarnings("unchecked")
 	protected static final Class<? extends ExactNodeListener>[] LISTENERS = new Class[] {};
-
+	
+	
+	public PermissionRegistry getPermissions(){
+		return perms;
+	}
+	
+	public static PermissionRegistry getPermissionRegistry(){
+		return instance.getPermissions();
+	}
+	
 	@Override
 	public void onEnable() {
 		super.onEnable();
 		perms = new PermissionRegistry();
+	}
+	
+	@Override
+	public void onDisable() {
+		super.onDisable();
 	}
 
 	protected void registerListeners() {
