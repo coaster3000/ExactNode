@@ -6,17 +6,21 @@ import org.bukkit.event.Listener;
 
 public abstract class ExactNodeListener implements Listener {
 	protected ExactNode plugin = null;
-	protected boolean informPlayers = false;
-	protected boolean useMaterialNames = true;
+	protected PermissionRegistry perms;
 	public ExactNodeListener(ExactNode plugin,ConfigurationSection config)
 	{
-		useMaterialNames = config.getBoolean("use-material-names",useMaterialNames);
-		informPlayers = config.getBoolean("inform-players",informPlayers);
 		this.plugin = plugin;
+		perms = plugin.getPermissions();
+		if (perms == null)
+			throw new IllegalArgumentException("Plugin does not have permission registry!!!");
 	}
 	
 	public boolean hasPermission(Player player,String permission)
 	{
 		return player.hasPermission(permission);
+	}
+	
+	public void register(){
+		ExactNode.getPluginManager().registerEvents(this, plugin);
 	}
 }

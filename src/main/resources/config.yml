@@ -1,0 +1,59 @@
+# Permission defaults are what a permission node default is if a player does 
+# not have true or false on a node. Or if node never was registered.
+# 
+# Checks are what types of permission checks are enabled
+#
+# Notify is whether or not to notify player they don't have permissions
+# Warning: The pickup notification is off due to fact it will spam user 
+# if they stay on top of the item
+#
+# Messages are always dark red in color. And variables are %block %item and %player
+# NOTE: Currently in this version %player variable was not created yet.
+permission-defaults:
+  block:
+    break: op
+    place: op
+    ignite: op
+  item:
+    use: op
+    drop: op
+    craft: op
+    have: op
+    pickup: op
+    hold: op
+checks:
+  block:
+    break: true
+    place: true
+    ignite: true
+  item:
+    use: true
+    drop: true
+    craft: true
+    have: true
+    pickup: true
+    hold: true
+messages:
+  block:
+    break: You are not allowed to break "%block"
+    place: You are not allowed to place "%block"
+    ignite: You are not allowed to ignite "%block"
+  item:
+    have: You are not allowed to have "%item"
+    drop: You are not allowed to drop "%item"
+    pickup: You are not allowed to pickup "%item"
+    craft: You are not allowed to craft "%item"
+    use: You are not allowed to use "%item"
+    hold: You are not allowed to hold "%item"
+notify:
+  block:
+    break: true
+    place: true
+    ignite: true
+  item:
+    use: true
+    drop: true
+    craft: true
+    have: true
+    pickup: false
+    hold: true
